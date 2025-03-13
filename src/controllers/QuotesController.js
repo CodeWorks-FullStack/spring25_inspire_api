@@ -6,6 +6,15 @@ export class QuotesController extends BaseController {
     super('api/quotes')
     this.router
       .get('', this.getRandomQuote)
+      // NOTE middleware!
+      // everything below (after) the .use must pass through the middleware function
+      .use((request, response, next) => {
+        if (request.body.likesCheese == true) {
+          next()
+        }
+        next(new Error("You must like cheese in order to create a quote"))
+      })
+      .post('', this.createQuote)
   }
 
   /**
@@ -20,5 +29,14 @@ export class QuotesController extends BaseController {
     } catch (error) {
       next(error)
     }
+  }
+
+  /**
+   * @param {import("express").Request} request
+   * @param {import("express").Response} response
+   * @param {import("express").NextFunction} next
+   */
+  async createQuote(request, response, next) {
+    response.send('Creating quote!')
   }
 }
