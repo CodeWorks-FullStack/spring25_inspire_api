@@ -10,3 +10,14 @@ export const ImageSchema = new Schema(
     toJSON: { virtuals: true }
   }
 )
+
+ImageSchema.virtual('author', {
+  ref: 'Account',
+  localField: 'authorId',
+  foreignField: '_id',
+  justOne: true,
+  // NOTE this virtual will default to only select the name and picture
+  options: {
+    select: 'name picture'
+  }
+})
