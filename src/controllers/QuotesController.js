@@ -42,7 +42,8 @@ export class QuotesController extends BaseController {
   async createQuote(request, response, next) {
     try {
       const quoteData = request.body
-      // NOTE if there are red squiggles under userInfo, open the index.d.ts file and keep it open
+      // NOTE the userInfo will only be a part of the request object if the request has passed through our Auth0 middleware
+      // NOTE if there are red squiggles under userInfo, open the index.d.ts file and keep it open OR use ts-ignore
       const userInfo = request.userInfo
       // NOTE never ever trust the client
       quoteData.authorId = userInfo.id
