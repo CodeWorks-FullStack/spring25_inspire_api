@@ -25,8 +25,12 @@ class TodosService {
     return todo
   }
 
-  async updateTodo(todoId, todoData) {
+  async updateTodo(todoId, todoData, userInfo) {
     const todoToUpdate = await this.getTodoById(todoId)
+
+    if (todoToUpdate.creatorId != userInfo.id) {
+      throw new Forbidden(`YOU CANNOT ALTER ANOTHER USER'S TODO, ${userInfo.nickname.toUpperCase()}`)
+    }
 
     // Long way
     // if (todoData.description != undefined) {
