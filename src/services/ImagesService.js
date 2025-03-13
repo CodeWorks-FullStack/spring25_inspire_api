@@ -7,6 +7,12 @@ class ImagesService {
     const image = await dbContext.Images.findOne().skip(skipAmount).populate('author')
     return image
   }
+
+  async createImage(imageData) {
+    const image = await dbContext.Images.create(imageData)
+    await image.populate('author')
+    return image
+  }
 }
 
 export const imagesService = new ImagesService()
