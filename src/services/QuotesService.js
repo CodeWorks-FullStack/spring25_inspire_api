@@ -1,6 +1,7 @@
 import { dbContext } from "../db/DbContext.js"
 
 class QuotesService {
+
   async getRandomQuote() {
     const quoteCount = await dbContext.Quotes.countDocuments()
     const randomSkipAmount = Math.floor(Math.random() * quoteCount)
@@ -8,6 +9,11 @@ class QuotesService {
     return quote
   }
 
+  async createQuote(quoteData) {
+    const quote = await dbContext.Quotes.create(quoteData)
+    await quote.populate('author', 'name picture')
+    return quote
+  }
 
 }
 
