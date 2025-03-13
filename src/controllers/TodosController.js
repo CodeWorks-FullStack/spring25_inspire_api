@@ -10,6 +10,8 @@ export class TodosController extends BaseController {
       .post('', this.createTodo)
       .get('', this.getMyTodos)
       .get('/:todoId', this.getTodoById)
+      .put('/:todoId', this.updateTodo)
+      .delete('/:todoId', this.deleteTodo)
   }
 
   /**
@@ -54,6 +56,37 @@ export class TodosController extends BaseController {
       const todoId = request.params.todoId
       const todo = await todosService.getTodoById(todoId)
       response.send(todo)
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  /**
+   * @param {import("express").Request} request
+   * @param {import("express").Response} response
+   * @param {import("express").NextFunction} next
+   */
+  async updateTodo(request, response, next) {
+    try {
+      const todoId = request.params.todoId
+      const todoData = request.body
+      const updatedTodo = await todosService.updateTodo(todoId, todoData)
+      response.send(updatedTodo)
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  /**
+  * @param {import("express").Request} request
+  * @param {import("express").Response} response
+  * @param {import("express").NextFunction} next
+  */
+  async deleteTodo(request, response, next) {
+    try {
+      const todoId = request.params.todoId
+      const message = await todosService.deleteTodo(todoId)
+      response.send(message)
     } catch (error) {
       next(error)
     }
