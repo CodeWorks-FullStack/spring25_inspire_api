@@ -1,0 +1,29 @@
+import { Auth0Provider } from "@bcwdev/auth0provider";
+import BaseController from "../utils/BaseController.js";
+import { todosService } from "../services/TodosService.js";
+
+export class TodosController extends BaseController {
+  constructor() {
+    super('api/todos')
+    this.router
+      .use(Auth0Provider.getAuthorizedUserInfo)
+      .post('', this.createTodo)
+  }
+
+  /**
+   * @param {import("express").Request} request
+   * @param {import("express").Response} response
+   * @param {import("express").NextFunction} next
+   */
+  async createTodo(request, response, next) {
+    try {
+      const todoData = request.body
+      const userInfo = request.userInfo
+      todoData.creatorId = userInfo.id
+      const todo = await todosService.createTodo(todoData)
+      response.send(todo)
+    } catch (error) {
+      next(error)
+    }
+  }
+}
