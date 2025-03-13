@@ -1,7 +1,29 @@
 import { dbContext } from "../db/DbContext.js"
-import { BadRequest } from "../utils/Errors.js"
+import { BadRequest, Forbidden } from "../utils/Errors.js"
 
 class TodosService {
+
+
+
+  async createTodo(todoData) {
+    const todo = await dbContext.Todos.create(todoData)
+    return todo
+  }
+
+  async getMyTodos(userId) {
+    const todos = await dbContext.Todos.find({ creatorId: userId })
+    return todos
+  }
+
+  async getTodoById(todoId) {
+    const todo = await dbContext.Todos.findById(todoId)
+
+    if (todo == null) {
+      throw new BadRequest(`Invalid todo id: ${todoId}`)
+    }
+
+    return todo
+  }
 
   async updateTodo(todoId, todoData) {
     const todoToUpdate = await this.getTodoById(todoId)
@@ -26,28 +48,12 @@ class TodosService {
     return todoToUpdate
   }
 
-  async createTodo(todoData) {
-    const todo = await dbContext.Todos.create(todoData)
-    return todo
-  }
-
-  async getMyTodos(userId) {
-    const todos = await dbContext.Todos.find({ creatorId: userId })
-    return todos
-  }
-
-  async getTodoById(todoId) {
-    const todo = await dbContext.Todos.findById(todoId)
-
-    if (todo == null) {
-      throw new BadRequest(`Invalid todo id: ${todoId}`)
-    }
-
-    return todo
-  }
-
-  async deleteTodo(todoId) {
+  async deleteTodo(todoId, userInfo) {
     const todoToDelete = await this.getTodoById(todoId)
+
+    if (todoToDelete.creatorId != userInfo.id) {
+      throw new Forbidden(`YOU CANNOT DELETE ANOTHER USER'S TODO, ${userInfo.nickname.toUpperCase()}. THE FBI IS ON ROUTE TO YOUR LOCATION`)
+    }
 
     await todoToDelete.deleteOne()
 

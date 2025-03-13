@@ -85,7 +85,8 @@ export class TodosController extends BaseController {
   async deleteTodo(request, response, next) {
     try {
       const todoId = request.params.todoId
-      const message = await todosService.deleteTodo(todoId)
+      const userInfo = request.userInfo
+      const message = await todosService.deleteTodo(todoId, userInfo)
       response.send(message)
     } catch (error) {
       next(error)
