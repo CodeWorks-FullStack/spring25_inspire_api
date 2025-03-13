@@ -8,6 +8,7 @@ export class TodosController extends BaseController {
     this.router
       .use(Auth0Provider.getAuthorizedUserInfo)
       .post('', this.createTodo)
+      .get('', this.getMyTodos)
   }
 
   /**
@@ -22,6 +23,21 @@ export class TodosController extends BaseController {
       todoData.creatorId = userInfo.id
       const todo = await todosService.createTodo(todoData)
       response.send(todo)
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  /**
+   * @param {import("express").Request} request
+   * @param {import("express").Response} response
+   * @param {import("express").NextFunction} next
+   */
+  async getMyTodos(request, response, next) {
+    try {
+      const userInfo = request.userInfo
+      const todos = await todosService.getMyTodos(userInfo.id)
+      response.send(todos)
     } catch (error) {
       next(error)
     }
