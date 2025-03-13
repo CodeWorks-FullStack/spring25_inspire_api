@@ -2,15 +2,13 @@ import { dbContext } from "../db/DbContext.js"
 import { BadRequest, Forbidden } from "../utils/Errors.js"
 
 class TodosService {
-
-
-
   async createTodo(todoData) {
     const todo = await dbContext.Todos.create(todoData)
     return todo
   }
 
   async getMyTodos(userId) {
+    //                                       { creatorId: '65f87bc1e02f1ee243874743' }
     const todos = await dbContext.Todos.find({ creatorId: userId })
     return todos
   }
@@ -21,6 +19,8 @@ class TodosService {
     if (todo == null) {
       throw new BadRequest(`Invalid todo id: ${todoId}`)
     }
+
+    // NOTE could probably just check user here!
 
     return todo
   }
@@ -38,7 +38,6 @@ class TodosService {
     // }
 
     // if (todoData.completed != undefined) {
-    //   todoToUpdate.completed = todoData.completed
     //   todoToUpdate.completed = todoData.completed
     // }
 

@@ -12,6 +12,7 @@ declare global {
 type UserInfo = {
   id: string;
   email: string;
+  nickname: string;
   picture: string;
   subs: string[];
   permissions: string[];
